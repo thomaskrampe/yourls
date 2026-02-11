@@ -1,0 +1,47 @@
+name: yourls
+services:
+  yourls:
+    image: yourls:latest
+    restart: always
+    depends_on:
+        mysql:
+            condition: service_healthy
+    # ports:
+    #     - 8080:8080
+    environment:
+        YOURLS_DB_PASS: ${DB_PASSWORD}
+        YOURLS_SITE: ${SITE_URL}
+        YOURLS_USER: ${SITE_USER}
+        YOURLS_PASS: ${SITE_PASSWORD}
+    volumes:
+        - ./plugins:/var/www/html/user/plugins/
+        - ./pages:/var/www/html/user/pages/
+    networks:
+        - yourls-internal
+        - reverse-proxy
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8080/admin/"]
+        interval: 30s
+        timeout: 10s
+        retries: 3
+        start_period: 10s
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        MYSQL_DATABASE: yourls
+    volumes:
+        - ./db:/var/lib/mysql
+    networks:
+        - yourls-internal
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 30s
+networks:
+    yourls-internal: null
+    reverse-proxy:
+        external: true
