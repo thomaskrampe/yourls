@@ -1,7 +1,7 @@
 name: yourls
 services:
   yourls:
-    image: yourls:latest
+    image: yourls:1.10.3
     container_name: yourls-main
     restart: always
     depends_on:
