@@ -27,7 +27,7 @@ services:
         retries: 3
         start_period: 10s
   mysql:
-    image: mysql
+    image: mysql:9.7.0
     container_name: yourls-mysql
     restart: always
     environment:
@@ -38,7 +38,8 @@ services:
     networks:
         - yourls-internal
     healthcheck:
-        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+        # test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
         interval: 10s
         timeout: 5s
         retries: 5
