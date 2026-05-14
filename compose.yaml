@@ -48,3 +48,4 @@ networks:
     yourls-internal: null
     reverse-proxy:
         external: true
+        
